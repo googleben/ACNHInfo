@@ -9,12 +9,9 @@ enum Col {
     Index, Name, Price, Location, Times, Shadow, Months, Caught
 }
 
-
-
-
-
 enum AppTab {
-    Insectopedia, Fishopedia, Insects, Fish, January, February, March, April, May, June, July, August, September, October, November, December
+    January=0, February, March, April, May, June, July, August, September, October, November, December,
+    Insectopedia, Fishopedia, Insects, Fish
 }
 
 interface AppState {
@@ -59,7 +56,7 @@ class App extends React.Component<{}, AppState> {
             </div>
             <div  style={{overflowX: "auto", height:"95vh"}}>
                 
-                {t===AppTab.Insectopedia? <CritterpediaTiles type="bug" key="bug" /> : t===AppTab.Fishopedia ? <CritterpediaTiles type="fish" key="fish" /> : t===AppTab.Insects ? <AllBugs cols={allFishCols} /> : t===AppTab.Fish ? <AllFish cols={allFishCols} /> : <Month month={(t as number) - 2} />}
+                {t===AppTab.Insectopedia? <CritterpediaTiles type="bug" key="bug" /> : t===AppTab.Fishopedia ? <CritterpediaTiles type="fish" key="fish" /> : t===AppTab.Insects ? <AllBugs cols={allFishCols} /> : t===AppTab.Fish ? <AllFish cols={allFishCols} /> : <Month month={(t as number)} />}
                 
 
             </div>
