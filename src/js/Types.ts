@@ -1,5 +1,5 @@
-import bugsRaw from "./bugs.json";
-import fishRaw from "./fish.json";
+import bugsRaw from "../assets/bugs.json";
+import fishRaw from "../assets/fish.json";
 
 export const bugsArr: Bug[] = bugsRaw.sort((a, b) => a.index - b.index);
 export const fishArr: Fish[] = fishRaw.sort((a, b) => a.index - b.index);

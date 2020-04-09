@@ -1,6 +1,6 @@
 import React from 'react';
-import './App.css';
-import "./glyph.css";
+import '../css/App.scss';
+import "../css/glyph.css";
 import {Bug, Fish, bugsArr, fishArr, shortMonths} from "./Types"
 
 import * as cookies from "browser-cookies";
@@ -22,18 +22,18 @@ export class CritterpediaTiles extends React.Component<CritterpediaTilesProps, C
     constructor(props: CritterpediaTilesProps) {
         super(props);
         this.state = {
-            noTimeBar: cookies.get(this.props.type+"NoTimeBar")==="1",
-            noCompleted: cookies.get(this.props.type+"NoCompleted")==="1",
-            onlyMonth: cookies.get(this.props.type+"OnlyMonth")==="1",
-            onlyTime: cookies.get(this.props.type+"OnlyTime")==="1",
-            showMore: cookies.get(this.props.type+"ShowMore")==="1"
+            noTimeBar: cookies.get("noTimeBar")==="1",
+            noCompleted: cookies.get("noCompleted")==="1",
+            onlyMonth: cookies.get("onlyMonth")==="1",
+            onlyTime: cookies.get("onlyTime")==="1",
+            showMore: cookies.get("showMore")==="1"
         }
     }
 
     setOption(name: keyof CritterpediaTilesState, value: boolean) {
         let ns: any = {};
         ns[name] = value;
-        cookies.set(this.props.type+name.charAt(0).toUpperCase()+name.substring(1), value?"1":"0");
+        cookies.set(name, value?"1":"0");
         this.setState(ns);
     }
 
@@ -123,7 +123,7 @@ export class CritterpediaTile extends React.Component<CritterpediaTileProps, Cri
             if (sp[4]==="AM") {
                 if (hr2===12) hr2 = 0;
             } else hr2 += 12;
-            for (let i = hr1; i < hr2 || i < 24; i++) {
+            for (let i = hr1; hr1<hr2 ? i<hr2 : i<24; i++) {
                 active.push(i);
             }
             if (hr1 > hr2) {

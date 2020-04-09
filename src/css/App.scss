@@ -7,6 +7,7 @@ table {
 body {
   font-family: Ubuntu;
   background-color: #444;
+  margin: 0;
 }
 
 
@@ -54,20 +55,20 @@ td:first-child {
   border-right: 2pt solid white;
   text-align: right;
 }
-td:first-child.even {
-  background-color: #333333;
+tr:nth-child(2n-1) td:first-child {
+  background-color: #333333 !important;
 }
-td:first-child.odd {
-  background-color: #474747;
+tr:nth-child(2n) td:first-child {
+  background-color: #474747 !important;
 }
 td {
   padding-left: 4pt;
   padding-right: 4pt;
 }
-.blue .even {
+.blue tr:nth-child(2n-1) td {
 	background:#305496;
 }
-.blue .odd {
+.blue tr:nth-child(2n) td {
 	background:#4472C4;
 }
 .month {
