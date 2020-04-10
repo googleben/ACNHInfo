@@ -1,23 +1,23 @@
 {
   "files": {
-    "main.css": "/ACNHInfo/static/css/main.a3155ce0.chunk.css",
-    "main.js": "/ACNHInfo/static/js/main.bfc2f83b.chunk.js",
-    "main.js.map": "/ACNHInfo/static/js/main.bfc2f83b.chunk.js.map",
+    "main.css": "/ACNHInfo/static/css/main.5abf375d.chunk.css",
+    "main.js": "/ACNHInfo/static/js/main.fcf0940c.chunk.js",
+    "main.js.map": "/ACNHInfo/static/js/main.fcf0940c.chunk.js.map",
     "runtime-main.js": "/ACNHInfo/static/js/runtime-main.d8e45b96.js",
     "runtime-main.js.map": "/ACNHInfo/static/js/runtime-main.d8e45b96.js.map",
-    "static/js/2.203f6956.chunk.js": "/ACNHInfo/static/js/2.203f6956.chunk.js",
-    "static/js/2.203f6956.chunk.js.map": "/ACNHInfo/static/js/2.203f6956.chunk.js.map",
+    "static/js/2.bf358b16.chunk.js": "/ACNHInfo/static/js/2.bf358b16.chunk.js",
+    "static/js/2.bf358b16.chunk.js.map": "/ACNHInfo/static/js/2.bf358b16.chunk.js.map",
     "index.html": "/ACNHInfo/index.html",
-    "precache-manifest.b5dd9ea79e55beff26b3224408c2c2e7.js": "/ACNHInfo/precache-manifest.b5dd9ea79e55beff26b3224408c2c2e7.js",
+    "precache-manifest.0766275b34975051b18b005f6e22bc5d.js": "/ACNHInfo/precache-manifest.0766275b34975051b18b005f6e22bc5d.js",
     "service-worker.js": "/ACNHInfo/service-worker.js",
-    "static/css/main.a3155ce0.chunk.css.map": "/ACNHInfo/static/css/main.a3155ce0.chunk.css.map",
-    "static/js/2.203f6956.chunk.js.LICENSE.txt": "/ACNHInfo/static/js/2.203f6956.chunk.js.LICENSE.txt",
+    "static/css/main.5abf375d.chunk.css.map": "/ACNHInfo/static/css/main.5abf375d.chunk.css.map",
+    "static/js/2.bf358b16.chunk.js.LICENSE.txt": "/ACNHInfo/static/js/2.bf358b16.chunk.js.LICENSE.txt",
     "static/media/glyph.css": "/ACNHInfo/static/media/ACNH.b84202f6.ttf"
   },
   "entrypoints": [
     "static/js/runtime-main.d8e45b96.js",
-    "static/js/2.203f6956.chunk.js",
-    "static/css/main.a3155ce0.chunk.css",
-    "static/js/main.bfc2f83b.chunk.js"
+    "static/js/2.bf358b16.chunk.js",
+    "static/css/main.5abf375d.chunk.css",
+    "static/js/main.fcf0940c.chunk.js"
   ]
 }
