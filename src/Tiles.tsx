@@ -123,11 +123,13 @@ export class CritterpediaTile extends React.Component<CritterpediaTileProps, Cri
             if (sp[4]==="AM") {
                 if (hr2===12) hr2 = 0;
             } else hr2 += 12;
-            for (let i = hr1; i < hr2 || i < 24; i++) {
-                active.push(i);
+            
+            if(hr1 < hr2) {
+                for(let i = hr1; i < hr2; ++i)  active.push(i);
             }
-            if (hr1 > hr2) {
-                for (let i = 0; i < hr2; i++) active.push(i);
+            else {
+              for (let i = hr1; i < 24; ++i) active.push(i);
+              for (let i = 0; i < hr2; i++) active.push(i);
             }
         }
         if (fs.onlyTime && !active.includes(now.getHours())) return null;
