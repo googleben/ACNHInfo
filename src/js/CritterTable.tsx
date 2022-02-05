@@ -1,5 +1,6 @@
 import {Bug, Fish, bugsArr, fishArr, monthNames} from "./Types"
 import React from 'react';
+import "../css/CritterTable.scss"
 
 export enum Col {
     Index, Name, Price, Location, Times, Shadow, Months, Caught
@@ -14,7 +15,7 @@ interface CritterTableProps {
 
 
 interface CritterTableState {
-    sort: string;
+    sort: "index" | "name" | "price" | "location" | "shadow";
     reverseSort: boolean;
 }
 
@@ -25,7 +26,7 @@ export class CritterTable extends React.Component<CritterTableProps, CritterTabl
         this.state = {sort: "index", reverseSort: false}
     }
 
-    setSort(this: CritterTable, sort: string) {
+    setSort(this: CritterTable, sort: CritterTableState["sort"]) {
         if (this.state.sort===sort) {
             this.setState({reverseSort: !this.state.reverseSort});
         } else {
@@ -39,13 +40,14 @@ export class CritterTable extends React.Component<CritterTableProps, CritterTabl
         let ansArr = [];
         let sort = this.state.sort;
         let rev = this.state.reverseSort;
+        let now = new Date();
+        let cMonth = now.getMonth();
         arr.sort((aa, bb) => {
             let ans = ((a, b) => {
                 if (sort === "index") return a.index-b.index;
                 if (sort === "name") return a.name.localeCompare(b.name);
-                if (sort === "price") return a.price - b.price;
+                if (sort === "price") return a.sell - b.sell;
                 if (sort === "location") return a.location.localeCompare(b.location);
-                if (sort === "times") return a.times[0].localeCompare(b.times[0]);
                 if (sort === "shadow" && "shadow" in a && "shadow" in b) return a.shadow.localeCompare(b.shadow);
                 return 0;
             })(aa,bb) * (rev ? -1 : 1);
@@ -54,27 +56,26 @@ export class CritterTable extends React.Component<CritterTableProps, CritterTabl
         });
         for (let fish of arr) {
             let m = this.props.month;
-            if (this.props.month !== undefined && !fish.seasons[this.props.month]) continue;
+            if (this.props.month !== undefined && fish.nhTimes[this.props.month][0] === "NA") continue;
 
             let ans = <tr key={fish.index}>
                 {this.props.cols.includes(Col.Index)?<td>{fish.index}</td>:<div />}
-                {this.props.cols.includes(Col.Name)?<td>{fish.name+(m!==undefined&&!fish.seasons[(m + 1) % 12]?" [1]":"")+(m!==undefined&&!fish.seasons[(m + 11) % 12]?" [2]":"")}</td>:<div />}
-                {this.props.cols.includes(Col.Price)?<td>{fish.price}</td>:<div />}
+                {this.props.cols.includes(Col.Name)?<td>{fish.name+(m!==undefined&&fish.nhTimes[this.props.month][(m + 1) % 12] === "NA"?" [1]":"")+(m!==undefined&&fish.nhTimes[this.props.month][(m + 11) % 12] === "NA"?" [2]":"")}</td>:<div />}
+                {this.props.cols.includes(Col.Price)?<td>{fish.sell}</td>:<div />}
                 {this.props.cols.includes(Col.Location)?<td>{fish.location}</td>:<div />}
-                {this.props.cols.includes(Col.Times)?<td>{fish.times.join(", ")}</td>:<div />}
+                {this.props.cols.includes(Col.Times)?<td>{fish.nhTimes[cMonth].join(", ")}</td>:<div />}
                 {this.props.cols.includes(Col.Shadow) && "shadow" in fish?<td>{fish.shadow}</td>:null}
-                {this.props.cols.includes(Col.Months)?fish.seasons.map((v, i) => <td key={i} className={"check "+(v?" yes":" no")}>{v?"🗹":"🗷"}</td>):<div />}
-                {this.props.cols.includes(Col.Caught)?<td>{fish.caught.map(s => "'"+s+"'").join("\t|\t")}</td>:<div />}
+                {this.props.cols.includes(Col.Months)?fish.nhTimes.map(t => t[0]!=="NA").map((v, i) => <td key={i} className={"check "+(v?" yes":" no")}>{v?"🗹":"🗷"}</td>):<div />}
+                {this.props.cols.includes(Col.Caught)?<td>{fish.catchMessages.map(s => "'"+s+"'").join("\t|\t")}</td>:<div />}
             </tr>
             ansArr.push(ans);
         }
-        return <table className="blue">
+        return <table className="critterTable blue">
             <thead><tr>
                 {this.props.cols.includes(Col.Index)?<th onClick={() => this.setSort("index")} className={"clickable "}>#</th>:<div />}
                 {this.props.cols.includes(Col.Name)?<th onClick={() => this.setSort("name")} className={"clickable "}>Name</th>:<div />}
                 {this.props.cols.includes(Col.Price)?<th onClick={() => this.setSort("price")} className={"clickable "}>Price</th>:<div />}
                 {this.props.cols.includes(Col.Location)?<th onClick={() => this.setSort("location")} className={"clickable"}>Location</th>:<div />}
-                {this.props.cols.includes(Col.Times)?<th onClick={() => this.setSort("times")} className={"clickable "}>Times</th>:<div />}
                 {this.props.cols.includes(Col.Shadow) && t?<th onClick={() => this.setSort("shadow")} className={"clickable "}>Shadow</th>:null}
                 {this.props.cols.includes(Col.Months)?monthNames.map(v => <th key={v}>{v.charAt(0)}</th>):<div />}
                 {this.props.cols.includes(Col.Caught)?<th>Catch Messages</th>:<div />}
