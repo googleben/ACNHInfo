@@ -225,13 +225,15 @@ export class CritterpediaTile extends React.Component<CritterpediaTileProps, Cri
 
     constructor(props: CritterpediaTileProps) {
         super(props);
-        const f = "shadow" in this.props.data;
-        this.state = {done: cookies.get((f?"fish":"bug")+this.props.data.index)==="1"};
+        const f = "shadow" in this.props.data && !("movementSpeed" in this.props.data);
+        const sc = "movementSpeed" in this.props.data;
+        this.state = {done: cookies.get((f?"fish":sc?"seaCreature":"bug")+this.props.data.index)==="1"};
     }
 
     setDone() {
-        const f = "shadow" in this.props.data;
-        cookies.set((f?"fish":"bug")+this.props.data.index, this.state.done?"0":"1");
+        const f = "shadow" in this.props.data && !("movementSpeed" in this.props.data);
+        const sc = "movementSpeed" in this.props.data;
+        cookies.set((f?"fish":sc?"seaCreature":"bug")+this.props.data.index, this.state.done?"0":"1");
         this.setState({done: !this.state.done, newlyDone: !this.state.done});
     }
 
@@ -248,6 +250,7 @@ export class CritterpediaTile extends React.Component<CritterpediaTileProps, Cri
         const times = this.props.parState.southernHemisphere ? d.shTimes : d.nhTimes;
         if (fs.onlyMonth && times[11][0] === "NA") return null;
         const f = "shadow" in this.props.data;
+        const sc = "movementSpeed" in this.props.data;
         const hasLoc = "location" in this.props.data;
         let active = [];
         for (let t of times[month]) {
