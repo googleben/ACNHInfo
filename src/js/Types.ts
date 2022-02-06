@@ -5,6 +5,7 @@ import seaCreaturesRaw from "../assets/seaCreatures.json";
 export const bugsArr: Bug[] = bugsRaw.sort((a, b) => a.index - b.index);
 export const fishArr: Fish[] = fishRaw.sort((a, b) => a.index - b.index);
 export const seaCreaturesArr: SeaCreature[] = seaCreaturesRaw.sort((a, b) => a.index - b.index);
+export const crittersArr: (Bug | Fish | SeaCreature)[] = (bugsArr as (Bug | Fish | SeaCreature)[]).concat(fishArr).concat(seaCreaturesArr);
 
 export const monthNames = [
     "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"

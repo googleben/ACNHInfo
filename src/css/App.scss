@@ -40,6 +40,12 @@ body {
     color: white;
 }
 
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 .nav {
     background-color: $bgDark;
     width: 100%;
@@ -79,8 +85,36 @@ body {
     }
 }
 
+.clock-arrow {
+    cursor: pointer;
+    position: absolute;
+    top: calc(50% - 4px);
+    left: calc(110% + 7px);
+}
+
+.clock-arrow-inner {
+    stroke: white;
+}
+
+.clock-arrow-outline {
+    stroke: black;
+}
+
+.clock-arrow path {
+    transition: d .2s;
+}
+
+.clock-arrow-reverse path {
+    d: path("M 13.5, 30 L 5, 17.5 L 13.5, 5");
+}
+
+.clock-hidden {
+    transform: translateX(-132%);
+}
+
 .clock {
     position: fixed;
+    transition: transform .7s;
     bottom: 2em;
     left: 2em;
     text-align: center;
@@ -125,8 +159,6 @@ body {
 }
 
 .footer {
-    padding-left: 5px;
-    padding-right: 5px;
     font-size: 12px;
     background-color: $accent;
     padding-top: 5px;
@@ -136,4 +168,9 @@ body {
     a {
         color: white !important;
     }
+    min-width: 100%;
+}
+
+.content {
+    flex-grow: 1;
 }

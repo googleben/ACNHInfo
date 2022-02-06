@@ -1,6 +1,8 @@
-import {Bug, Fish, bugsArr, fishArr, monthNames} from "./Types"
+import {Bug, Fish, bugsArr, fishArr, monthNames, seaCreaturesArr, SeaCreature} from "./Types"
 import React from 'react';
 import "../css/CritterTable.scss"
+import * as cookies from "browser-cookies";
+import { AppState } from "./App";
 
 export enum Col {
     Index, Name, Price, Location, Times, Shadow, Months, Caught
@@ -8,7 +10,8 @@ export enum Col {
 
 interface CritterTableProps {
     cols: Col[];
-    type: "Fish" | "Bug";
+    type: "Fish" | "Bug" | "SeaCreatures";
+    parState: AppState;
     month?: number;
     filter?: (f: Fish | Bug) => boolean
 }
@@ -17,13 +20,21 @@ interface CritterTableProps {
 interface CritterTableState {
     sort: "index" | "name" | "price" | "location" | "shadow";
     reverseSort: boolean;
+    done: Set<number>
 }
 
 export class CritterTable extends React.Component<CritterTableProps, CritterTableState> {
 
     constructor(props: CritterTableProps) {
         super(props);
-        this.state = {sort: "index", reverseSort: false}
+        let done = new Set<number>();
+        const t = this.props.type;
+        const pre = t==="Fish"?"fish":t==="Bug"?"bug":"seaCreature";
+        let arr: (Bug[] | Fish[] | SeaCreature[]) = t==="Fish" ? fishArr : t==="Bug" ? bugsArr : seaCreaturesArr;
+        for (const c of arr) {
+            if (cookies.get(pre+c.index)==="1") done.add(c.index);
+        }
+        this.state = {sort: "index", reverseSort: false, done}
     }
 
     setSort(this: CritterTable, sort: CritterTableState["sort"]) {
@@ -34,14 +45,24 @@ export class CritterTable extends React.Component<CritterTableProps, CritterTabl
         }
     }
 
+    setDone(index: number) {
+        const t = this.props.type;
+        let done = this.state.done.has(index);
+        cookies.set((t==="Fish"?"fish":t==="Bug"?"bug":"seaCreature")+index, done?"0":"1");
+        let tmp = new Set(this.state.done);
+        if (done) tmp.delete(index);
+        else tmp.add(index);
+        this.setState({done: tmp});
+    }
+
     render() {
-        let t = this.props.type==="Fish";
-        let arr: (Bug | Fish)[] = t ? fishArr : bugsArr;
+        let t = this.props.type;
+        let parState = this.props.parState;
+        let arr: (Bug[] | Fish[] | SeaCreature[]) = t==="Fish" ? fishArr : t==="Bug" ? bugsArr : seaCreaturesArr;
         let ansArr = [];
         let sort = this.state.sort;
         let rev = this.state.reverseSort;
-        let now = new Date();
-        let cMonth = now.getMonth();
+        let cMonth = this.props.month ?? parState.now.getMonth();
         arr.sort((aa, bb) => {
             let ans = ((a, b) => {
                 if (sort === "index") return a.index-b.index;
@@ -54,31 +75,36 @@ export class CritterTable extends React.Component<CritterTableProps, CritterTabl
             if (ans === 0) return aa.index-bb.index;
             return ans;
         });
-        for (let fish of arr) {
+        for (let critter of arr) {
+            const times = parState.southernHemisphere ? critter.shTimes : critter.nhTimes;
             let m = this.props.month;
-            if (this.props.month !== undefined && fish.nhTimes[this.props.month][0] === "NA") continue;
+            if (m !== undefined && times[cMonth][0] === "NA") continue;
+            const done = this.state.done.has(critter.index);
 
-            let ans = <tr key={fish.index}>
-                {this.props.cols.includes(Col.Index)?<td>{fish.index}</td>:<div />}
-                {this.props.cols.includes(Col.Name)?<td>{fish.name+(m!==undefined&&fish.nhTimes[this.props.month][(m + 1) % 12] === "NA"?" [1]":"")+(m!==undefined&&fish.nhTimes[this.props.month][(m + 11) % 12] === "NA"?" [2]":"")}</td>:<div />}
-                {this.props.cols.includes(Col.Price)?<td>{fish.sell}</td>:<div />}
-                {this.props.cols.includes(Col.Location)?<td>{fish.location}</td>:<div />}
-                {this.props.cols.includes(Col.Times)?<td>{fish.nhTimes[cMonth].join(", ")}</td>:<div />}
-                {this.props.cols.includes(Col.Shadow) && "shadow" in fish?<td>{fish.shadow}</td>:null}
-                {this.props.cols.includes(Col.Months)?fish.nhTimes.map(t => t[0]!=="NA").map((v, i) => <td key={i} className={"check "+(v?" yes":" no")}>{v?"🗹":"🗷"}</td>):<div />}
-                {this.props.cols.includes(Col.Caught)?<td>{fish.catchMessages.map(s => "'"+s+"'").join("\t|\t")}</td>:<div />}
+            let ans = <tr className={done?"done":""} key={critter.index} onDoubleClick={() => {this.setDone(critter.index); return false;}}>
+                {this.props.cols.includes(Col.Index)?<td>{critter.index}</td>:<></>}
+                <td><span className={"critter-table-icon-owl"+(done?"-done":"")}></span></td>
+                {this.props.cols.includes(Col.Name)?<td>{critter.name+(m!==undefined&&times[this.props.month][(m + 1) % 12] === "NA"?" [1]":"")+(m!==undefined&&times[this.props.month][(m + 11) % 12] === "NA"?" [2]":"")}</td>:<></>}
+                {this.props.cols.includes(Col.Price)?<td>{critter.sell}</td>:<></>}
+                {this.props.cols.includes(Col.Location)?<td>{(critter as Fish).location}</td>:<></>}
+                {this.props.cols.includes(Col.Times)?<td>{times[cMonth].join(", ")}</td>:<></>}
+                {this.props.cols.includes(Col.Shadow) && "shadow" in critter?<td>{critter.shadow}</td>:<></>}
+                {this.props.cols.includes(Col.Months)?times.map(t => t[0]!=="NA").map((v, i) => <td key={i} className={"check "+(v?" yes":" no")}>{v?"🗹":"🗷"}</td>):<></>}
+                {this.props.cols.includes(Col.Caught)?<td>{critter.catchMessages.map(s => "'"+s+"'").join("\t|\t")}</td>:<></>}
             </tr>
             ansArr.push(ans);
         }
-        return <table className="critterTable blue">
+        return <table className="critter-table blue">
             <thead><tr>
-                {this.props.cols.includes(Col.Index)?<th onClick={() => this.setSort("index")} className={"clickable "}>#</th>:<div />}
-                {this.props.cols.includes(Col.Name)?<th onClick={() => this.setSort("name")} className={"clickable "}>Name</th>:<div />}
-                {this.props.cols.includes(Col.Price)?<th onClick={() => this.setSort("price")} className={"clickable "}>Price</th>:<div />}
-                {this.props.cols.includes(Col.Location)?<th onClick={() => this.setSort("location")} className={"clickable"}>Location</th>:<div />}
-                {this.props.cols.includes(Col.Shadow) && t?<th onClick={() => this.setSort("shadow")} className={"clickable "}>Shadow</th>:null}
-                {this.props.cols.includes(Col.Months)?monthNames.map(v => <th key={v}>{v.charAt(0)}</th>):<div />}
-                {this.props.cols.includes(Col.Caught)?<th>Catch Messages</th>:<div />}
+                {this.props.cols.includes(Col.Index)?<th onClick={() => this.setSort("index")} className={"clickable "}>#</th>:<></>}
+                <th key="done"><span className="critter-table-icon-owl-done"></span></th>
+                {this.props.cols.includes(Col.Name)?<th onClick={() => this.setSort("name")} className={"clickable "}>Name</th>:<></>}
+                {this.props.cols.includes(Col.Price)?<th onClick={() => this.setSort("price")} className={"clickable "}>Price</th>:<></>}
+                {this.props.cols.includes(Col.Location)?<th onClick={() => this.setSort("location")} className={"clickable"}>Location</th>:<></>}
+                {this.props.cols.includes(Col.Times)?<th>Times</th>:<></>}
+                {this.props.cols.includes(Col.Shadow) && t!=="Bug"?<th onClick={() => this.setSort("shadow")} className={"clickable "}>Shadow</th>:<></>}
+                {this.props.cols.includes(Col.Months)?monthNames.map(v => <th key={v}>{v.charAt(0)}</th>):<></>}
+                {this.props.cols.includes(Col.Caught)?<th>Catch Messages</th>:<></>}
             </tr></thead>
             <tbody style={{overflowY: "auto"}}>
                 {ansArr}

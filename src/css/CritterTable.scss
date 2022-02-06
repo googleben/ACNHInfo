@@ -3,7 +3,19 @@
 table {
     border-collapse: collapse;
 }
-.critterTable {
+.critter-table {
+    &-icon-owl {
+        color: transparent;
+        &-done {
+            @extend .critter-table-icon-owl;
+            color: white;
+        }
+        &::before {
+            transform: translateY(1px);
+            content:'\0041';
+            line-height: inherit !important;
+        }
+    }
     .clickable {
         cursor: pointer;
     }
@@ -49,6 +61,10 @@ table {
         white-space: pre;
     }
 
+    th:last-child, td:last-child {
+        width: 100%;
+    }
+
     tbody tr:first-child td {
         border-top:1.0pt solid white;
     }
@@ -60,10 +76,20 @@ table {
     }
     
     &.blue tr:nth-child(2n-1) td {
-        background:#305496;
+        background-color: #333333;
+        //background:#305496;
     }
     &.blue tr:nth-child(2n) td {
+        background-color: #474747;
+        //background:#4472C4;
+    }
+    &.blue tr.done:nth-child(2n-1) td {
+        background:#305496;
+        //background:rgba(65, 20, 0);
+    }
+    &.blue tr.done:nth-child(2n) td {
         background:#4472C4;
+        //background:rgb(98, 30, 0);
     }
     .month {
         width: 100%;
