@@ -46,11 +46,11 @@ export class CritterpediaTiles extends React.Component<CritterpediaTilesProps, C
         this.onMinuteChange = {};
         this.timeout = null;
         cookies.defaults.expires = 100000;
-        const timeOffsetMinutes = Number.parseInt(cookies.get("timeOffsetMinutes")?.replaceAll(/[^1234567890]/g, "")?.padStart(1, "0") ?? "0");
-        const timeOffsetHours = Number.parseInt(cookies.get("timeOffsetHours")?.replaceAll(/[^1234567890]/g, "")?.padStart(1, "0") ?? "0");
-        const timeOffsetDays = Number.parseInt(cookies.get("timeOffsetDays")?.replaceAll(/[^1234567890]/g, "")?.padStart(1, "0") ?? "0");
-        const timeOffsetMonths = Number.parseInt(cookies.get("timeOffsetMonths")?.replaceAll(/[^1234567890]/g, "")?.padStart(1, "0") ?? "0");
-        const timeOffsetYears = Number.parseInt(cookies.get("timeOffsetYears")?.replaceAll(/[^1234567890]/g, "")?.padStart(1, "0") ?? "0");
+        const timeOffsetMinutes = Number.parseInt(cookies.get("timeOffsetMinutes")?.replaceAll(/[^-1234567890]/g, "")?.padStart(1, "0") ?? "0");
+        const timeOffsetHours = Number.parseInt(cookies.get("timeOffsetHours")?.replaceAll(/[^-1234567890]/g, "")?.padStart(1, "0") ?? "0");
+        const timeOffsetDays = Number.parseInt(cookies.get("timeOffsetDays")?.replaceAll(/[^-1234567890]/g, "")?.padStart(1, "0") ?? "0");
+        const timeOffsetMonths = Number.parseInt(cookies.get("timeOffsetMonths")?.replaceAll(/[^-1234567890]/g, "")?.padStart(1, "0") ?? "0");
+        const timeOffsetYears = Number.parseInt(cookies.get("timeOffsetYears")?.replaceAll(/[^-1234567890]/g, "")?.padStart(1, "0") ?? "0");
         const date = new Date(Date.now() + (((timeOffsetYears * 365 + timeOffsetMonths * 31 + timeOffsetDays) * 24 + timeOffsetHours) * 60 + timeOffsetMinutes) * 60 * 1000);
         this.state = {
             noTimeBar: cookies.get("noTimeBar")==="1",
@@ -248,7 +248,7 @@ export class CritterpediaTile extends React.Component<CritterpediaTileProps, Cri
         const month = now.getMonth();
         const d = this.props.data;
         const times = this.props.parState.southernHemisphere ? d.shTimes : d.nhTimes;
-        if (fs.onlyMonth && times[11][0] === "NA") return null;
+        if (fs.onlyMonth && times[month][0] === "NA") return null;
         const f = "shadow" in this.props.data;
         const sc = "movementSpeed" in this.props.data;
         const hasLoc = "location" in this.props.data;
